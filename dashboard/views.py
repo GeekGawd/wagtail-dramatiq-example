@@ -1,14 +1,14 @@
 from django.shortcuts import redirect, render
 
 from .models import Job
-from .tasks import process_job
-
+from .tasks import process_job, do_something
+from django.http import JsonResponse
+from dramatiq.actor import Actor
+from dramatiq.broker import get_broker
+from .wagtailbg import background
+from django_dramatiq.models import Task
 
 def index(request):
-    if request.method == "POST":
-        job = Job.objects.create(type=request.POST["type"])
-        process_job.send(job.pk)
-        return redirect("index")
-    return render(request, "dashboard/index.html", {
-        "jobs": Job.objects.order_by("-created_at").all(),
-    })
+    broker = get_broker()
+    do_something.send()
+    return JsonResponse(data={"status": "Enqueued Message"})

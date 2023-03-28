@@ -1,21 +1,18 @@
 [[source]]
-
 url = "https://pypi.python.org/simple"
 verify_ssl = true
 name = "pypi"
 
-
 [packages]
-
 dj-database-url = "*"
 django = "*"
 django-dramatiq = "*"
-dramatiq = {extras = ["watch", "redis"]}
+dramatiq = {extras = ["watch", "redis", "rabbitmq"]}
 gunicorn = "*"
 redis = "*"
 "psycopg2" = "*"
 whitenoise = "*"
-
+django-dramatiq-pg = "*"
+dramatiq-pg = "*"
 
 [dev-packages]
-

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'django_dramatiq',
     'dashboard',
 ]
@@ -89,21 +88,25 @@ DATABASES['default'].update(dj_database_url.config(conn_max_age=600))
 
 # Tasks
 
-DRAMATIQ_REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+# DRAMATIQ_REDIS_URL = os.getenv("REDIS_URL", "redis://127.0.0.1:6379/0")
+# "BROKER": "brokers.EagerBroker"
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
     "OPTIONS": {
-        "connection_pool": redis.ConnectionPool.from_url(DRAMATIQ_REDIS_URL),
-    },
+    # "url": "redis://localhost:6379"
+                },
     "MIDDLEWARE": [
+        "dramatiq.middleware.Prometheus",
         "dramatiq.middleware.AgeLimit",
         "dramatiq.middleware.TimeLimit",
+        "dramatiq.middleware.Callbacks",
         "dramatiq.middleware.Retries",
-        "django_dramatiq.middleware.AdminMiddleware",
         "django_dramatiq.middleware.DbConnectionsMiddleware",
+        "django_dramatiq.middleware.AdminMiddleware",
     ]
 }
 
+DRAMATIQ_TASKS_DATABASE = "default"
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
